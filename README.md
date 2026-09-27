@@ -1,68 +1,45 @@
-# IBM Hackathon GitHub Project Template
+# Legacy Notebook Modernizer
 
-This GitHub project template is for IBM Hackathon projects. It includes pre-configured security files to help prevent accidental credential commits and potential account suspension during the hackathon.
+Built for the IBM Bob 2.0 Hackathon.
 
-## 🚀 Quick Start
+IBM Bob IDE analyzes messy legacy Jupyter notebooks, catches real production-blocking bugs, and refactors one into a tested, deployable FastAPI service.
 
-1. **Use this template to create your project:**
-   - Click "Use this template" button above and select "Create a new repository"
-   - Name your repository
-   - Click "Create repository"
+## Live Demo
 
-2. **Clone your new repository:**
+https://legacy-notebook-modernizer-1.onrender.com/docs
 
-   ```bash
-   git clone https://github.com/HACKATHON-ORG/your-repo-name.git
-   cd your-repo-name
-   ```
+## What This Does
 
-3. **Set up environment variables:**
+1. **Analysis** — Bob reads a legacy notebook and produces a plain-English explanation plus a severity-rated list of issues (see `analyzer/`)
+2. **Refactor** — Bob rebuilds the notebook into a production-ready FastAPI service (see `app/`), fixing the bugs it found while preserving the original model's exact behavior
+3. **Tests** — Bob writes a full pytest suite validating the service (see `tests/`)
 
-   ```bash
-   # Copy the example file
-   cp .env.example .env
+## Real Bugs Found
 
-   # Edit .env with your actual credentials
-   # Use your preferred editor (nano, vim, code, etc.)
-   nano .env
-   ```
+- **Data leakage**: `pd.get_dummies()` applied separately to train and test data, which silently misaligns columns at inference time
+- **Silent logic bug**: a missing assignment left every passenger over 64 with a wrong feature value, with no error raised
+- **Misleading accuracy**: a "99% accuracy" notebook defined a train/test split but never used it
 
-4. **Verify .gitignore is working:**
+## Running Locally
 
-   ```bash
-   # This should NOT show .env file
-   git status
+\`\`\`bash
+pip install -r requirements.txt
+python -m app.model      # trains and saves the pipeline
+uvicorn app.main:app --reload
+\`\`\`
 
-   # This should confirm .env is ignored
-   git check-ignore -v .env
-   ```
+Then visit `http://localhost:8000/docs`.
 
-5. **Start developing!**
+## Project Structure
 
-## 🔒 Security Features
+\`\`\`
+sample_notebooks/   # the three original messy notebooks + dataset
+analyzer/            # Bob's analysis reports for each notebook
+app/                 # the refactored FastAPI service
+tests/               # pytest suite (18/18 passing)
+bob_sessions/        # Bob IDE task session summaries
+\`\`\`
 
-This template includes:
+## Built With
 
-- **`.gitignore`** - Prevents committing credentials and live session files
-- **`.bobignore`** - Prevents AI assistants from logging credentials
-- **`.env.example`** - Template for your environment variables
-
-## 📋 Before Every Commit
-
-Always run this checklist:
-
-- [ ] Reviewed `git diff` for sensitive data
-- [ ] No hardcoded API keys or passwords
-- [ ] `.env` file is NOT in staged changes
-- [ ] No files with "credential" or "secret" in name
-- [ ] Used environment variables for all credentials
-
-## 🆘 Need Help?
-
-- Read [SECURITY.md](SECURITY.MD) for detailed guidelines
-- Contact hackathon support through mentor channel
-- Ask in the hackathon Slack workspace
-
----
-
-**Remember:** Security is everyone's responsibility. When in doubt, ask for help!
+IBM Bob IDE, Python, FastAPI, scikit-learn, pandas, Pydantic, pytest
