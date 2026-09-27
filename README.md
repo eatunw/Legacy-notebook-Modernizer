@@ -43,8 +43,3 @@ bob_sessions/        # Bob IDE task session summaries
 ## Built With
 
 IBM Bob IDE, Python, FastAPI, scikit-learn, pandas, Pydantic, pytest
-- Ask in the hackathon Slack workspace
-
----
-
-**Remember:** Security is everyone's responsibility. When in doubt, ask for help!
